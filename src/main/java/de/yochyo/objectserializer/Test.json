@@ -1,0 +1,14 @@
+{
+  "super": {
+    "super": {
+      "superParent": "super"
+    },
+    "a": "test_if_it_works",
+    "test": "test_in_parent"
+  },
+  "field": {
+    "field1": "field1",
+    "field2": "field22"
+  },
+  "initialized": "init"
+}
