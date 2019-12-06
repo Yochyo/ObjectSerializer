@@ -1,14 +1,15 @@
 {
-  "super": {
-    "super": {
-      "superParent": "super"
+  "array": [
+    "java.lang.Integer"
+  ],
+  "initialized": "init",
+  "fooArray": [
+    "de.yochyo.objectserializer.Foo",
+    {
+      "foo": "1"
     },
-    "a": "test_if_it_works",
-    "test": "test_in_parent"
-  },
-  "field": {
-    "field1": "field1",
-    "field2": "field22"
-  },
-  "initialized": "init"
+    {
+      "foo": "1"
+    }
+  ]
 }
