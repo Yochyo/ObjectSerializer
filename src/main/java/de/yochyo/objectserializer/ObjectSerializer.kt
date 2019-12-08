@@ -12,6 +12,7 @@ import java.lang.reflect.Modifier
 import java.util.*
 
 //TODO list of object would not work
+//TODO add documentation
 
 object ObjectSerializer {
     /**
