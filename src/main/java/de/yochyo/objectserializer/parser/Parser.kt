@@ -1,26 +1,27 @@
 package de.yochyo.objectserializer.parser
 
-import org.json.JSONObject
-import java.lang.Exception
-
 interface Parser {
-    companion object{
+    companion object {
         private val parsers = ArrayList<Parser>()
-        init{
+
+        init {
             parsers += SerializeableParser()
             parsers += PrimitiveOrStringParser()
             parsers += ArrayParser()
             parsers += CollectionParser()
+            parsers += ObjectParser()
         }
-        fun toJSON(o: Any, clazz: Class<*>, annotations: Array<Annotation> = emptyArray()): Any{
-            for(parser in parsers){
-                if(parser.isParseable(o, clazz, annotations)) return parser.toJSON(o, clazz)
+
+        fun toJSON(o: Any, clazz: Class<*>, annotations: Array<Annotation> = emptyArray()): Any {
+            for (parser in parsers) {
+                if (parser.isParseable(o, clazz, annotations)) return parser.toJSON(o, clazz)
             }
             throw Exception("object $o of type ${clazz.name} could not be parsed")
         }
-        fun <E> toObject(o: Any, clazz: Class<E>, annotations: Array<Annotation> = emptyArray()): E{
-            for(parser in parsers){
-                if(parser.isParseable(o, clazz, annotations)) return parser.toObject(o, clazz)
+
+        fun <E> toObject(o: Any, clazz: Class<E>, annotations: Array<Annotation> = emptyArray()): E {
+            for (parser in parsers) {
+                if (parser.isParseable(o, clazz, annotations)) return parser.toObject(o, clazz)
             }
             throw Exception("object $o of type ${clazz.name} could not be parsed")
         }
@@ -31,6 +32,7 @@ interface Parser {
      * @param clazz of the object
      */
     fun isParseable(o: Any, clazz: Class<*>, annotations: Array<Annotation>): Boolean
+
     /**
      * Parses an Object to a JSON compatible format
      * @param object that should be parsed

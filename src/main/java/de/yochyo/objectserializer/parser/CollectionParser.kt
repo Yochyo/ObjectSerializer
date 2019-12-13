@@ -1,6 +1,7 @@
 package de.yochyo.objectserializer.parser
 
 import de.yochyo.objectserializer.ObjectSerializer
+import de.yochyo.objectserializer.utils.Utils
 import org.json.JSONArray
 
 class CollectionParser : Parser {
@@ -23,7 +24,7 @@ class CollectionParser : Parser {
         val json = json as JSONArray
         val listType = Class.forName(json[0].toString())
         val typeClass = Class.forName(json[1].toString())
-        val collection = ObjectSerializer.getDefaultConstructor(listType).newInstance() as MutableCollection<Any>
+        val collection = Utils.getDefaultConstructor(listType).newInstance() as MutableCollection<Any>
         if (json.length() > 2) {
             for (i in 0 until json.length() - 2)
                 collection.add(Parser.toObject(json[i + 2], typeClass) as Any)

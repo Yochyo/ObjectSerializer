@@ -1,0 +1,49 @@
+{
+  "intArrayList": [
+    "java.util.ArrayList",
+    "java.lang.Integer",
+    1
+  ],
+  "instance": {
+    "instance": 1,
+    "string": "String"
+  },
+  "string": "String",
+  "intLinkedList": [
+    "java.util.LinkedList",
+    "java.lang.Integer",
+    1
+  ],
+  "interfaceValue": 5,
+  "int": 1,
+  "intArray": [
+    1,
+    2,
+    4
+  ],
+  "stringLinkedList": [
+    "java.util.LinkedList",
+    "java.lang.String",
+    "3"
+  ],
+  "super": {
+    "super": {
+      "superSuperValue": 99
+    },
+    "superValue": 1
+  },
+  "stringArrayList": [
+    "java.util.ArrayList",
+    "java.lang.String",
+    "3"
+  ],
+  "lambda": "rO0ABXNyACZkZS55b2NoeW8ub2JqZWN0c2VyaWFsaXplci5UZXN0Q2xhc3MkMYmLQ12Ppy/iAgAAeHIAGmtvdGxpbi5qdm0uaW50ZXJuYWwuTGFtYmRhkU4a8M/pOzcCAAFJAAVhcml0eXhwAAAAAA==",
+  "null": {
+    "NULL": ""
+  },
+  "stringArray": [
+    "1",
+    "2",
+    "3"
+  ]
+}

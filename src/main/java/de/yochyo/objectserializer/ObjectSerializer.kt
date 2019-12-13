@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
+//TODO Objectparser as parser
 object ObjectSerializer {
     /**
      * Takes an object an parses it to a JSONObject. It will ignore fields with the @Ignore Annotation.
@@ -46,12 +47,19 @@ object ObjectSerializer {
      *  @throws Exception
      */
     private fun classToJson(o: Any, clazz: Class<*>, json: JSONObject): JSONObject {
+        val nullFields = ArrayList<Field>()
         for (field in clazz.declaredFields)
             Utils.accessField(field) {
                 if (isValidField(field))
-                    json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations))
+                    if (field.get(o) == null) nullFields += field
+                    else json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations))
             }
 
+        if (nullFields.isNotEmpty()) {
+            val nullObject = JSONObject()
+            for (field in nullFields) nullObject.put(field.name, "")
+            json.put("null", nullObject)
+        }
         if (Utils.hasValidSuperclass(clazz)) json.put("super", classToJson(o, clazz.superclass, JSONObject()))
         return json
     }
@@ -66,14 +74,19 @@ object ObjectSerializer {
      *  @throws Exception
      */
     private fun <E> jsonToClass(o: E, clazz: Class<*>, json: JSONObject): E {
+        val nullFields: Collection<Any?> = if(json.has("null")) json.getJSONObject("null").keySet() else ArrayList()
+
         for (field in clazz.declaredFields) {
             Utils.accessField(field) {
-                if (isValidField(field))
-                    Utils.accessField(field) { field.set(o, Parser.toObject(json[field.name], field.type, field.annotations)) }
+                if (isValidField(field)) {
+                    if (nullFields.contains(field.name)) field.set(o, null)
+                    else field.set(o, Parser.toObject(json[field.name], field.type, field.annotations))
+                }
             }
         }
         if (Utils.hasValidSuperclass(clazz)) jsonToClass(o, clazz.superclass, json["super"] as JSONObject)
         return o
     }
-    fun isValidField(field: Field) = !(field.isAnnotationPresent(Ignore::class.java) || Modifier.isStatic(field.modifiers))
+
+    private fun isValidField(field: Field) = !(field.isAnnotationPresent(Ignore::class.java) || Modifier.isStatic(field.modifiers))
 }
