@@ -6,6 +6,4 @@ package de.yochyo.objectserializer.annotations
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
-annotation class Serializeable{
-
-}
+annotation class Serializeable
