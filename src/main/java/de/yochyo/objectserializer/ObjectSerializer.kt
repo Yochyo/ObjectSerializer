@@ -1,14 +1,9 @@
 package de.yochyo.objectserializer
 
-import de.yochyo.objectserializer.annotations.Ignore
+import de.yochyo.objectserializer.annotations.Serializeable
 import de.yochyo.objectserializer.parser.Parser
-import de.yochyo.objectserializer.utils.Utils
 import org.json.JSONObject
-import java.lang.reflect.Constructor
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 
-//TODO Objectparser as parser
 object ObjectSerializer {
     /**
      * Takes an object an parses it to a JSONObject. It will ignore fields with the @Ignore Annotation.
@@ -17,11 +12,7 @@ object ObjectSerializer {
      * @param o Any not-null object
      * @return JSONObject containing all fields of o
      */
-    fun toJSONObject(o: Any): JSONObject {
-        val json = JSONObject()
-        classToJson(o, o.javaClass, json)
-        return json
-    }
+    fun toJSONObject(o: Any): JSONObject = Parser.toJSON(o, o.javaClass) as JSONObject
 
     /**
      * Takes a JSONObject and will parse it to a class of type E. This will only work if the class,
@@ -33,60 +24,9 @@ object ObjectSerializer {
      * @return instance of class E
      * @throws Exception
      */
-    fun <E> toObject(json: JSONObject, clazz: Class<E>): E {
-        val defaultConstructor = Utils.getDefaultConstructor(clazz) as Constructor<E>
-        val o = defaultConstructor.newInstance()
-        return jsonToClass(o, clazz, json)
-    }
+    fun <E> toObject(json: JSONObject, clazz: Class<E>) = Parser.toObject(json, clazz)
 
-    /**
-     *  Takes an Object and parses it to a JSONObject
-     *  @param o Object that should be parsed
-     *  @param clazz Class whose fields should be read (needed for iterating through superclasses)
-     *  @return JSONObject representing Object o
-     *  @throws Exception
-     */
-    private fun classToJson(o: Any, clazz: Class<*>, json: JSONObject): JSONObject {
-        val nullFields = ArrayList<Field>()
-        for (field in clazz.declaredFields)
-            Utils.accessField(field) {
-                if (isValidField(field))
-                    if (field.get(o) == null) nullFields += field
-                    else json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations))
-            }
-
-        if (nullFields.isNotEmpty()) {
-            val nullObject = JSONObject()
-            for (field in nullFields) nullObject.put(field.name, "")
-            json.put("null", nullObject)
-        }
-        if (Utils.hasValidSuperclass(clazz)) json.put("super", classToJson(o, clazz.superclass, JSONObject()))
-        return json
-    }
-
-    /**
-     *  Takes a JSONObject and parses it to an Object
-     *  @param E class it should be parsed to
-     *  @param o Object that should be parsed
-     *  @param clazz Class whose fields should be read (needed for iterating through superclasses)
-     *  @param json JSONObject representing the Object
-     *  @return JSONObject representing Object o
-     *  @throws Exception
-     */
-    private fun <E> jsonToClass(o: E, clazz: Class<*>, json: JSONObject): E {
-        val nullFields: Collection<Any?> = if(json.has("null")) json.getJSONObject("null").keySet() else ArrayList()
-
-        for (field in clazz.declaredFields) {
-            Utils.accessField(field) {
-                if (isValidField(field)) {
-                    if (nullFields.contains(field.name)) field.set(o, null)
-                    else field.set(o, Parser.toObject(json[field.name], field.type, field.annotations))
-                }
-            }
-        }
-        if (Utils.hasValidSuperclass(clazz)) jsonToClass(o, clazz.superclass, json["super"] as JSONObject)
-        return o
-    }
-
-    private fun isValidField(field: Field) = !(field.isAnnotationPresent(Ignore::class.java) || Modifier.isStatic(field.modifiers))
+    private val serializeableArray = arrayOf(Serializeable::class.java.constructors.first().newInstance() as Annotation)
+    fun serializeableToJSONObject(o: Any) = Parser.toJSON(o, o.javaClass, serializeableArray)
+    fun <E> serializeableToObject(o: Any, clazz: Class<E>) = Parser.toObject(o, clazz, serializeableArray)
 }
