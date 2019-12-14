@@ -12,16 +12,16 @@ interface Parser {
             parsers += ObjectParser()
         }
 
-        fun toJSON(o: Any, clazz: Class<*>, annotations: Array<Annotation> = emptyArray()): Any {
+        fun toJSON(o: Any, clazz: Class<*>, flags: Array<String> = emptyArray()): Any {
             for (parser in parsers) {
-                if (parser.isParseable(o, clazz, annotations)) return parser.toJSON(o, clazz)
+                if (parser.isParseable(o, clazz, flags)) return parser.toJSON(o, clazz)
             }
             throw Exception("object $o of type ${clazz.name} could not be parsed")
         }
 
-        fun <E> toObject(o: Any, clazz: Class<E>, annotations: Array<Annotation> = emptyArray()): E {
+        fun <E> toObject(o: Any, clazz: Class<E>, flags: Array<String> = emptyArray()): E {
             for (parser in parsers) {
-                if (parser.isParseable(o, clazz, annotations)) return parser.toObject(o, clazz)
+                if (parser.isParseable(o, clazz, flags)) return parser.toObject(o, clazz)
             }
             throw Exception("object $o of type ${clazz.name} could not be parsed")
         }
@@ -31,7 +31,7 @@ interface Parser {
      * @param object that should be checked
      * @param clazz of the object
      */
-    fun isParseable(o: Any, clazz: Class<*>, annotations: Array<Annotation>): Boolean
+    fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean
 
     /**
      * Parses an Object to a JSON compatible format

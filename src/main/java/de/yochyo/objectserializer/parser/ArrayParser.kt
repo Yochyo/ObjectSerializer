@@ -3,7 +3,7 @@ package de.yochyo.objectserializer.parser
 import org.json.JSONArray
 
 class ArrayParser : Parser {
-    override fun isParseable(o: Any, clazz: Class<*>, annotations: Array<Annotation>): Boolean {
+    override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
         return clazz.isArray
     }
 

@@ -1,13 +1,13 @@
 package de.yochyo.objectserializer.parser
 
-import de.yochyo.objectserializer.ObjectSerializer
 import de.yochyo.objectserializer.utils.Utils
+import de.yochyo.objectserializer.utils.Utils.toFlags
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Constructor
 
 class ObjectParser : Parser{
-    override fun isParseable(o: Any, clazz: Class<*>, annotations: Array<Annotation>): Boolean {
+    override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
         return true
     }
     /**
@@ -54,7 +54,7 @@ class ObjectParser : Parser{
             Utils.accessField(field) {
                 if (Utils.isValidField(field))
                     if (field.get(o) == null) nullFields.put(field.name)
-                    else json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations))
+                    else json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations.toFlags()))
             }
 
         if (!nullFields.isEmpty) json.put("null", nullFields)
@@ -78,7 +78,7 @@ class ObjectParser : Parser{
             Utils.accessField(field) {
                 if (Utils.isValidField(field)) {
                     if (nullFields.contains(field.name)) field.set(o, null)
-                    else field.set(o, Parser.toObject(json[field.name], field.type, field.annotations))
+                    else field.set(o, Parser.toObject(json[field.name], field.type, field.annotations.toFlags()))
                 }
             }
         }

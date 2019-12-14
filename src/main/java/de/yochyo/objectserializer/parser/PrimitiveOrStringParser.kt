@@ -1,7 +1,7 @@
 package de.yochyo.objectserializer.parser
 
 class PrimitiveOrStringParser : Parser{
-    override fun isParseable(o: Any, clazz: Class<*>, annotations: Array<Annotation>): Boolean {
+    override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
         return clazz.isPrimitive || java.lang.Number::class.java.isAssignableFrom(clazz) || o is String
     }
 

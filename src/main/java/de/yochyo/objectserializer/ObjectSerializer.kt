@@ -26,7 +26,7 @@ object ObjectSerializer {
      */
     fun <E> toObject(json: JSONObject, clazz: Class<E>) = Parser.toObject(json, clazz)
 
-    private val serializeableArray = arrayOf(Serializeable::class.java.constructors.first().newInstance() as Annotation)
+    private val serializeableArray = arrayOf(Serializeable::class.java.name)
     fun serializeableToJSONObject(o: Any) = Parser.toJSON(o, o.javaClass, serializeableArray)
     fun <E> serializeableToObject(o: Any, clazz: Class<E>) = Parser.toObject(o, clazz, serializeableArray)
 }

@@ -8,8 +8,8 @@ import java.io.ObjectOutputStream
 import java.util.*
 
 class SerializeableParser : Parser {
-    override fun isParseable(o: Any, clazz: Class<*>, annotations: Array<Annotation>): Boolean {
-        return annotations.find { it is Serializeable } != null
+    override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
+        return flags.contains(Serializeable::class.java.name)
     }
 
     override fun toJSON(o: Any, clazz: Class<*>): Any {

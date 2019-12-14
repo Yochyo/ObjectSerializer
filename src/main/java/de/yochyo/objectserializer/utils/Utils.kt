@@ -1,7 +1,9 @@
 package de.yochyo.objectserializer.utils
 
+import de.yochyo.objectserializer.annotations.Ignore
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 object Utils {
     /**
@@ -33,6 +35,10 @@ object Utils {
     fun getDefaultConstructor(clazz: Class<*>): Constructor<*> {
         for (constructor in clazz.constructors)
             if (constructor.parameters.isEmpty()) return constructor
-        throw Exception("Class does not contain a default constructor")
+        throw Exception("Class ${clazz.name} does not contain a default constructor")
     }
+
+    fun Array<Annotation>.toFlags() = Array(size) { (get(it) as java.lang.annotation.Annotation).annotationType().name }
+
+    fun isValidField(field: Field) = !(field.isAnnotationPresent(Ignore::class.java) || Modifier.isStatic(field.modifiers))
 }
