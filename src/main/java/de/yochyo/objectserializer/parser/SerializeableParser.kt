@@ -9,7 +9,7 @@ import java.util.*
 
 class SerializeableParser : Parser {
     override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
-        return flags.contains(Serializeable::class.java.name)
+        return o is Function<*> || flags.contains(Serializeable::class.java.name)
     }
 
     override fun toJSON(o: Any, clazz: Class<*>): Any {
