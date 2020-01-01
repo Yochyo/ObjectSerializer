@@ -6,10 +6,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.reflect.Constructor
 
-class ObjectParser : Parser{
+class ObjectParser : Parser {
     override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
         return true
     }
+
     /**
      * Takes an object an parses it to a JSONObject. It will ignore fields with the @Ignore Annotation.
      * Lambdas stored in variable or other Serializable objects
@@ -42,22 +43,19 @@ class ObjectParser : Parser{
     }
 
     /**
-    *  Takes an Object and parses it to a JSONObject
-    *  @param o Object that should be parsed
-    *  @param clazz Class whose fields should be read (needed for iterating through superclasses)
-    *  @return JSONObject representing Object o
-    *  @throws Exception
-    */
+     *  Takes an Object and parses it to a JSONObject
+     *  @param o Object that should be parsed
+     *  @param clazz Class whose fields should be read (needed for iterating through superclasses)
+     *  @return JSONObject representing Object o
+     *  @throws Exception
+     */
     private fun classToJson(o: Any, clazz: Class<*>, json: JSONObject): JSONObject {
-        val nullFields = JSONArray()
         for (field in clazz.declaredFields)
             Utils.accessField(field) {
                 if (Utils.isValidField(field))
-                    if (field.get(o) == null) nullFields.put(field.name)
-                    else json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations.toFlags()))
+                    json.put(field.name, Parser.toJSON(field.get(o), field.type, field.annotations.toFlags()))
             }
 
-        if (!nullFields.isEmpty) json.put("null", nullFields)
         if (Utils.hasValidSuperclass(clazz)) json.put("super", classToJson(o, clazz.superclass, JSONObject()))
         return json
     }
@@ -72,13 +70,10 @@ class ObjectParser : Parser{
      *  @throws Exception
      */
     private fun <E> jsonToClass(o: E, clazz: Class<*>, json: JSONObject): E {
-        val nullFields = if (json.has("null")) json.getJSONArray("null") else JSONArray()
-
         for (field in clazz.declaredFields) {
             Utils.accessField(field) {
                 if (Utils.isValidField(field)) {
-                    if (nullFields.contains(field.name)) field.set(o, null)
-                    else field.set(o, Parser.toObject(json[field.name], field.type, field.annotations.toFlags()))
+                    field.set(o, Parser.toObject(json[field.name], field.type, field.annotations.toFlags()))
                 }
             }
         }
