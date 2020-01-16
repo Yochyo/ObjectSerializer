@@ -1,15 +1,15 @@
 package de.yochyo.objectserializer.parser
 
-import de.yochyo.objectserializer.annotations.Serializeable
+import de.yochyo.objectserializer.annotations.Serializable
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.*
 
-class SerializeableParser : Parser {
+class SerializableParser : Parser {
     override fun isParseable(o: Any, clazz: Class<*>, flags: Array<String>): Boolean {
-        return o is Function<*> || flags.contains(Serializeable::class.java.name)
+        return o is Function<*> || flags.contains(Serializable::class.java.name)
     }
 
     override fun toJSON(o: Any, clazz: Class<*>): Any {

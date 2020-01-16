@@ -5,7 +5,7 @@ interface Parser {
         private val parsers = ArrayList<Parser>()
 
         init {
-            parsers += SerializeableParser()
+            parsers += SerializableParser()
             parsers += PrimitiveOrStringParser()
             parsers += ArrayParser()
             parsers += CollectionParser()

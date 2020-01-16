@@ -2,4 +2,4 @@ package de.yochyo.objectserializer
 
 import java.io.Serializable
 
-interface SerializeableRunnable : Runnable, Serializable
+interface SerializableRunnable : Runnable, Serializable

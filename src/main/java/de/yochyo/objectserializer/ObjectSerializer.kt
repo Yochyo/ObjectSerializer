@@ -1,6 +1,6 @@
 package de.yochyo.objectserializer
 
-import de.yochyo.objectserializer.annotations.Serializeable
+import de.yochyo.objectserializer.annotations.Serializable
 import de.yochyo.objectserializer.parser.Parser
 import org.json.JSONArray
 import org.json.JSONObject
@@ -16,7 +16,7 @@ object ObjectSerializer {
     fun toJSON(o: Any) = Parser.toJSON(o, o.javaClass)
 
     fun objectToJson(o: Any) = toJSON(o) as JSONObject
-    fun serializeableToString(serializeable: Any) = Parser.toJSON(serializeable, serializeable.javaClass, arrayOf(Serializeable::class.java.name)) as String
+    fun serializeableToString(serializeable: Any) = Parser.toJSON(serializeable, serializeable.javaClass, arrayOf(Serializable::class.java.name)) as String
     fun arrayToJson(array: Array<*>) = toJSON(array) as JSONArray
     fun collectionToJson(collection: Collection<*>) = toJSON(collection) as JSONArray
 
@@ -33,5 +33,5 @@ object ObjectSerializer {
      */
     fun <E> toObject(json: JSONObject, clazz: Class<E>) = Parser.toObject(json, clazz)
 
-    fun <E> serializeableToObject(serializeable: String, clazz: Class<E>) = Parser.toObject(serializeable, clazz, arrayOf(Serializeable::class.java.name))
+    fun <E> serializeableToObject(serializeable: String, clazz: Class<E>) = Parser.toObject(serializeable, clazz, arrayOf(Serializable::class.java.name))
 }
